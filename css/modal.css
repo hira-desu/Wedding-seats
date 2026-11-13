@@ -1,0 +1,28 @@
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 20; background: rgba(28,31,32,.48);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: fade-in .2s ease;
+}
+.profile-sheet {
+  position: relative; width: min(100%, 620px); max-height: 88vh; overflow-y: auto;
+  background: var(--white); border-radius: 18px 18px 0 0; padding: 30px 28px 36px;
+  box-shadow: 0 -12px 45px rgba(0,0,0,.16); animation: sheet-up .25s ease;
+}
+.modal-close {
+  position: absolute; top: 15px; right: 17px; width: 36px; height: 36px;
+  border: 1px solid var(--line); background: transparent; border-radius: 50%;
+  font-size: 19px; cursor: pointer;
+}
+.profile-top { text-align: center; padding: 8px 20px 20px; border-bottom: 1px solid var(--line); }
+.profile-top .avatar { width: 96px; height: 96px; margin-bottom: 14px; }
+.profile-top h2 { font: 500 22px "Noto Serif JP", serif; margin: 0 0 7px; }
+.profile-top p { color: var(--muted); font-size: 11px; margin: 0; }
+.profile-fields { display: grid; gap: 16px; padding-top: 20px; }
+.profile-field h3 { color: var(--gold); font-size: 10px; letter-spacing: .15em; margin: 0 0 6px; }
+.profile-field p { font: 13px/1.9 "Noto Serif JP", serif; white-space: pre-wrap; margin: 0; }
+@keyframes fade-in { from {opacity:0} to {opacity:1} }
+@keyframes sheet-up { from {transform:translateY(30px);opacity:.7} to {transform:translateY(0);opacity:1} }
+@media (min-width: 700px) {
+  .modal-backdrop { align-items: center; padding: 24px; }
+  .profile-sheet { border-radius: 12px; }
+}

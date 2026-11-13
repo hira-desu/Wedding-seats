@@ -1,0 +1,35 @@
+{
+  "tables": [
+    {
+      "id": "table01",
+      "name": "Aテーブル",
+      "type": "guest",
+      "x": 25,
+      "y": 34,
+      "capacity": 4
+    },
+    {
+      "id": "table02",
+      "name": "Bテーブル",
+      "type": "guest",
+      "x": 75,
+      "y": 34,
+      "capacity": 4
+    },
+    {
+      "id": "table03",
+      "name": "Cテーブル",
+      "type": "guest",
+      "x": 50,
+      "y": 63,
+      "capacity": 4
+    },
+    {
+      "id": "main",
+      "name": "新郎新婦",
+      "type": "main",
+      "x": 50,
+      "y": 13
+    }
+  ]
+}

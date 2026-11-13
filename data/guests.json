@@ -1,0 +1,70 @@
+{
+  "guests": [
+    {
+      "id": "guest001",
+      "name": "山田 太郎",
+      "nickname": "たろう",
+      "tableId": "table01",
+      "relationship": "新郎の友人",
+      "introduction": "大学時代からの友人。いつも場を明るくしてくれる存在です。",
+      "hobby": "旅行、サウナ",
+      "message": "今日は来てくれてありがとう！ゆっくり楽しんでいってね。",
+      "color": "#758b91"
+    },
+    {
+      "id": "guest002",
+      "name": "佐藤 健",
+      "nickname": "けん",
+      "tableId": "table01",
+      "relationship": "新郎の友人",
+      "introduction": "社会人になってから一緒に仕事をしてきた仲間です。",
+      "hobby": "キャンプ、カメラ",
+      "message": "久しぶりにゆっくり話そう！",
+      "color": "#a27d70"
+    },
+    {
+      "id": "guest003",
+      "name": "鈴木 花子",
+      "nickname": "はな",
+      "tableId": "table02",
+      "relationship": "新婦の友人",
+      "introduction": "学生時代からの大切な友人。思い出話が尽きません。",
+      "hobby": "カフェ巡り、読書",
+      "message": "今日は来てくれて本当にありがとう。",
+      "color": "#ad8d9c"
+    },
+    {
+      "id": "guest004",
+      "name": "高橋 美咲",
+      "nickname": "みさき",
+      "tableId": "table02",
+      "relationship": "新婦の友人",
+      "introduction": "一緒にたくさんの時間を過ごしてきた友人です。",
+      "hobby": "旅行、お菓子作り",
+      "message": "これからも変わらず仲良くしてね！",
+      "color": "#8f9876"
+    },
+    {
+      "id": "guest005",
+      "name": "田中 翔",
+      "nickname": "しょう",
+      "tableId": "table03",
+      "relationship": "新郎の同僚",
+      "introduction": "職場で頼りにしている先輩です。",
+      "hobby": "ランニング、映画",
+      "message": "お祝いに来てくれてありがとうございます！",
+      "color": "#8b806a"
+    },
+    {
+      "id": "guest006",
+      "name": "渡辺 玲奈",
+      "nickname": "れな",
+      "tableId": "table03",
+      "relationship": "新婦の同僚",
+      "introduction": "毎日を一緒に頑張っている大切な仲間です。",
+      "hobby": "音楽、カフェ",
+      "message": "今日は思いきり楽しんでいってください！",
+      "color": "#8296a5"
+    }
+  ]
+}
