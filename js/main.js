@@ -1,92 +1,80 @@
-import { loadAllData } from "./data.js";
-import { currentRoute, navigate } from "./router.js";
-import { renderSeating, bindSeatingEvents } from "./seating.js";
-import { renderTable, bindTableEvents } from "./table.js";
-import { renderProfile, bindProfileEvents } from "./profile.js";
-import { escapeHtml } from "./utils.js";
+import { loadData } from './data.js';
+import { createRouter } from './router.js';
+import { renderVenue } from './seating.js';
+import { openProfile } from './profile.js';
+import { $, escapeHtml, setImageFallback } from './utils.js';
 
-const app = document.querySelector("#app");
-const modalRoot = document.querySelector("#modal-root");
+const app = $('#app');
+const modalRoot = $('#modal-root');
 let data;
+let router;
 
+function backButton(label='戻る') { return `<div class="back-row"><button class="back-link" type="button" data-back>← ${label}</button></div>`; }
 function renderHome() {
-  const { wedding } = data;
-  return `
-    <section class="home-view">
-      <p class="eyebrow hero-kicker">A DAY TO REMEMBER</p>
-      <h1 class="hero-title">一人ひとりの糸が<br><span>つながり、織り成す。</span></h1>
-      <div class="hero-art" aria-hidden="true">
-        <svg viewBox="0 0 560 190">
-          <path d="M20 120 C120 10 180 180 280 80 S440 20 540 120" fill="none" stroke="#b59a65" stroke-width="1.5"/>
-          <path d="M20 80 C130 180 190 10 280 110 S440 170 540 70" fill="none" stroke="#34495e" stroke-width="1.5" opacity=".7"/>
-          <path d="M60 20 C130 100 160 100 230 20 S330 20 400 100 S470 170 520 30" fill="none" stroke="#b9a99a" stroke-width="1" opacity=".8"/>
-          <circle cx="280" cy="95" r="8" fill="#f5f0e6" stroke="#b59a65" stroke-width="2"/>
-          <path d="M230 150 L280 95 L330 150" fill="none" stroke="#34495e" stroke-width="1" opacity=".4"/>
-        </svg>
-      </div>
-      <p class="couple-names">${escapeHtml(wedding.groomName)} <span style="color:var(--gold)">×</span> ${escapeHtml(wedding.brideName)}</p>
-      <p class="wedding-date">${escapeHtml(wedding.date)}　${escapeHtml(wedding.venueName)}</p>
-      <div class="hero-rule"></div>
-      <p class="hero-copy">これまで出会ってきた大切なみなさまとのご縁。<br>それぞれの糸がつながり、今日という一日を織り成します。<br>どうぞ心ゆくまでお楽しみください。</p>
-      <div class="home-actions"><button class="primary-button" id="open-seating">席次表を見る <span>→</span></button></div>
-    </section>`;
+  const c = data.config;
+  app.innerHTML = `<section class="hero"><div class="hero-content">
+    <svg class="hero-mountain" viewBox="0 0 360 110" aria-hidden="true"><path d="M18 91 L116 34 L151 58 L209 8 L342 91" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M175 31 L209 8 L238 38 L219 31 L209 39 L199 29 L188 38Z" fill="#e9dfce" stroke="currentColor" stroke-width=".8"/><path d="M20 92 Q180 82 340 92" fill="none" stroke="currentColor" stroke-width=".8"/></svg>
+    <div class="eyebrow">${escapeHtml(c.subtitle || 'OUR WEDDING')}</div>
+    <h1 class="hero-title">${escapeHtml(c.weddingTitle || '結び、織りなす一日')}</h1>
+    <p class="hero-subtitle">${escapeHtml(c.coupleNames || '')}</p>
+    <div class="ornament">✧</div>
+    <p class="hero-date">${escapeHtml(c.date || '')}</p>
+    <p class="hero-message">${escapeHtml(c.welcomeMessage || '').replace(/\n/g,'<br>')}</p>
+    <a class="btn" href="#/seating">SEATING CHART <span aria-hidden="true">→</span></a>
+    <p class="top-note">テーブルを選んで、ゲストのプロフィールをご覧ください。</p>
+  </div></section>`;
 }
-
-function showError(error) {
-  console.error(error);
-  app.innerHTML = `<section class="content-view"><div class="section-heading"><h1>読み込みに失敗しました</h1><p>ページを再読み込みしてください。ローカルで確認する場合はHTTPサーバーを使用してください。</p></div></section>`;
+function renderSeating() {
+  app.innerHTML = `<section class="page"><div class="section-heading"><div class="eyebrow">FIND YOUR SEAT</div><h1>SEATING CHART</h1><p>会場の見取り図からテーブルをお選びください</p></div>
+    <div class="seating-layout"><div class="venue-panel"><div class="venue-topline"><span>${escapeHtml(data.config.venueName || 'WEDDING VENUE')}</span><span>会場レイアウト</span></div><div class="venue-canvas">${renderVenue(data.venue,data.tables,data.guests)}</div><p class="map-hint">各テーブルをタップするとゲスト一覧が表示されます</p></div>
+    <aside class="venue-side"><h3>ご案内</h3><p>テーブルを選択すると、そのテーブルにお座りのゲストをご覧いただけます。お名前や似顔絵をタップしてプロフィールもお楽しみください。</p><div class="legend"><div class="legend-item"><span class="legend-dot"></span>ゲストテーブル</div><div class="legend-item">✧ 新郎新婦席</div></div></aside></div></section>`;
+  app.querySelectorAll('[data-table-id]').forEach(node => {
+    const go = () => router.navigate(`table/${node.dataset.tableId}`);
+    node.addEventListener('click',go); node.addEventListener('keydown',event => { if(event.key==='Enter'||event.key===' '){event.preventDefault();go();} });
+  });
 }
-
-function render() {
+function renderTable(tableId) {
+  const table = data.tables.find(item => item.id === tableId);
+  if (!table) return renderNotFound();
+  const guests = data.guests.filter(guest => guest.tableId === tableId);
+  app.innerHTML = `<section class="page">${backButton('席次表へ戻る')}<div class="section-heading"><div class="eyebrow">GUESTS AT THIS TABLE</div><h1>${escapeHtml(table.name || table.label)}</h1><p>${escapeHtml(table.description || '')}</p></div>
+    <div class="table-intro"><span class="table-number">${escapeHtml(table.label || table.id)}</span><p class="muted">${guests.length}名</p></div>
+    ${guests.length ? `<div class="guest-grid">${guests.map(guest => `<button class="guest-card" type="button" data-guest-id="${escapeHtml(guest.id)}"><img class="guest-portrait" src="${escapeHtml(guest.portrait || 'assets/images/fallback/portrait.svg')}" alt="" loading="lazy"><div class="guest-name">${escapeHtml(guest.name)}</div>${guest.nickname ? `<div class="guest-nickname">${escapeHtml(guest.nickname)}</div>` : ''}${guest.relation ? `<div class="guest-relation">${escapeHtml(guest.relation)}</div>` : ''}<div class="guest-card-hint">PROFILE　↗</div></button>`).join('')}</div>` : `<div class="empty-state">このテーブルのゲスト情報はまだ登録されていません。</div>`}
+  </section>`;
+  app.querySelectorAll('.guest-portrait').forEach(setImageFallback);
+  app.querySelectorAll('[data-guest-id]').forEach(button => button.addEventListener('click',() => {
+    const guest = data.guests.find(item => item.id === button.dataset.guestId);
+    if (guest) openProfile(guest,modalRoot);
+  }));
+  app.querySelector('[data-back]').addEventListener('click',() => router.navigate('seating'));
+}
+function renderNotFound() {
+  app.innerHTML = `<section class="page error-state"><div class="eyebrow">PAGE NOT FOUND</div><h1>ページが見つかりません</h1><p>お探しのページは存在しないか、移動した可能性があります。</p><a class="btn btn-outline" href="#/">トップへ戻る</a></section>`;
+}
+function render(route) {
+  modalRoot.innerHTML = '';
   if (!data) return;
-  const route = currentRoute();
-  modalRoot.innerHTML = "";
-
-  if (route.page === "home") {
-    app.innerHTML = renderHome();
-    document.querySelector("#open-seating").addEventListener("click", () => navigate("seating"));
-    return;
-  }
-  if (route.page === "seating") {
-    app.innerHTML = renderSeating(data.venue, data.tables, data.guests);
-    bindSeatingEvents(app);
-    return;
-  }
-  if (route.page === "table") {
-    const table = data.tables.find((item) => item.id === route.id);
-    if (!table) return navigate("seating");
-    const guests = data.guests.filter((guest) => guest.tableId === table.id);
-    app.innerHTML = renderTable(table, guests);
-    bindTableEvents(app);
-    return;
-  }
-  if (route.page === "guest") {
-    const guest = data.guests.find((item) => item.id === route.id);
-    if (!guest) return navigate("seating");
-    const table = data.tables.find((item) => item.id === guest.tableId);
-    if (!history.state?.previousRoute) {
-      history.replaceState({ previousRoute: `table/${table?.id || "table01"}` }, "");
-    }
-    // URL履歴のひとつ前がテーブル一覧になるよう、モーダルを履歴に積む。
-    modalRoot.innerHTML = renderProfile(guest);
-    bindProfileEvents(modalRoot);
-  }
+  if (route.page === 'home') renderHome();
+  else if (route.page === 'seating') renderSeating();
+  else if (route.page === 'table') renderTable(route.tableId);
+  else renderNotFound();
+  window.scrollTo({top:0,behavior:'smooth'});
+  app.focus({preventScroll:true});
 }
 
-async function start() {
+async function init() {
   try {
-    data = await loadAllData();
-    document.querySelector("#header-date").textContent = data.wedding.date;
-    if (!location.hash) history.replaceState({}, "", `${location.pathname}${location.search}#home`);
-    render();
-    window.addEventListener("hashchange", render);
-    window.addEventListener("popstate", () => {
-      // 戻る操作ではハッシュに応じて画面を再描画する。
-      render();
+    data = await loadData();
+    $('#header-couple').textContent = data.config.coupleNames || 'Wedding Celebration';
+    $('#footer-copy').textContent = data.config.footerMessage || 'With love.';
+    router = createRouter(render);
+    render(router.parse());
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-back]') && !event.target.closest('.guest-card')) router.navigate('seating');
     });
   } catch (error) {
-    showError(error);
+    console.error(error);
+    app.innerHTML = `<section class="page error-state"><div class="eyebrow">LOAD ERROR</div><h1>データを読み込めませんでした</h1><p>${escapeHtml(error.message)}</p><p>GitHub PagesまたはローカルWebサーバー経由で開いているか、dataフォルダ内のJSONを確認してください。</p></section>`;
   }
 }
-
-start();
+init();

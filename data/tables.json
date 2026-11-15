@@ -1,35 +1,5 @@
-{
-  "tables": [
-    {
-      "id": "table01",
-      "name": "Aテーブル",
-      "type": "guest",
-      "x": 25,
-      "y": 34,
-      "capacity": 4
-    },
-    {
-      "id": "table02",
-      "name": "Bテーブル",
-      "type": "guest",
-      "x": 75,
-      "y": 34,
-      "capacity": 4
-    },
-    {
-      "id": "table03",
-      "name": "Cテーブル",
-      "type": "guest",
-      "x": 50,
-      "y": 63,
-      "capacity": 4
-    },
-    {
-      "id": "main",
-      "name": "新郎新婦",
-      "type": "main",
-      "x": 50,
-      "y": 13
-    }
-  ]
-}
+[
+  {"id":"table01","label":"A卓","name":"新郎友人","description":"新郎のご友人の皆さま"},
+  {"id":"table02","label":"B卓","name":"新婦友人","description":"新婦のご友人の皆さま"},
+  {"id":"table03","label":"C卓","name":"共通の友人","description":"お二人のご友人の皆さま"}
+]

@@ -1,8 +1,17 @@
 {
-  "title": "披露宴会場",
-  "subtitle": "会場見取り図（サンプル）",
-  "width": 800,
-  "height": 560,
-  "entranceLabel": "ENTRANCE",
-  "stageLabel": "高砂"
+  "viewBox": "0 0 1000 700",
+  "elements": [
+    {"type":"rect","x":35,"y":30,"width":930,"height":640,"rx":22,"fill":"#f7f3eb","stroke":"#d8c9ad","strokeWidth":2},
+    {"type":"text","x":500,"y":82,"text":"MAIN STAGE","fontSize":16,"fill":"#9a8155","letterSpacing":5},
+    {"type":"rect","x":360,"y":105,"width":280,"height":82,"rx":8,"fill":"#e9dfce","stroke":"#cbb995","strokeWidth":2},
+    {"type":"text","x":500,"y":153,"text":"新郎新婦席","fontSize":24,"fill":"#655b4b"},
+    {"type":"text","x":500,"y":235,"text":"WELCOME  ·  ENJOY THE MOMENT","fontSize":11,"fill":"#b29a70","letterSpacing":3},
+    {"type":"rect","x":75,"y":300,"width":850,"height":1,"fill":"#e3d8c6"},
+    {"type":"text","x":500,"y":625,"text":"ENTRANCE","fontSize":13,"fill":"#9a8155","letterSpacing":5}
+  ],
+  "tables": [
+    {"id":"table01","x":250,"y":390,"width":190,"height":125,"shape":"roundRect","label":"A卓"},
+    {"id":"table02","x":750,"y":390,"width":190,"height":125,"shape":"roundRect","label":"B卓"},
+    {"id":"table03","x":500,"y":535,"width":190,"height":125,"shape":"roundRect","label":"C卓"}
+  ]
 }
